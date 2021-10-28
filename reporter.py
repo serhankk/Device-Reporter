@@ -1,10 +1,17 @@
 # Imports
-import socket, subprocess, os
+from prettytable import PrettyTable
+import socket, subprocess, os, requests, CONFIG
 
-def introduction(text):
-    print('-' * 60)
-    print(text.center(60))
-    print('-' * 60)
+def send_message(text):
+    try:
+        requests.post('https://slack.com/api/chat.postMessage', {
+        'token': CONFIG.SLACK_TOKEN,
+        'channel': CONFIG.SLACK_CHANNEL_INFO,
+        'text': text,
+        'username': CONFIG.SLACK_BOT_NAME,
+})
+    except Exception as e:
+        print(e)
 
 def get_hostname():
     try:
@@ -55,15 +62,24 @@ def get_ram_usage():
         return f'{used_m} of {total_m}'
     except:
         pass
-
+hostname = get_hostname()
+local_ip = get_local_ip()
+wifi = get_connected_network()
+interface = get_using_interface()
+uptime = get_device_uptime()
+ram = get_ram_usage()
 
 information = '''HOSTNAME: "{}"
 LOCAL IP: "{}"
 CONNECTED NETWORK: "{}"
 USING NETWORK INTERFACE: "{}"
 DEVICE UPTIME: "{}"
-RAM USAGE: "{}"
-'''
+RAM USAGE: "{}"'''.format(hostname, local_ip, wifi, interface, uptime, ram)
 
-introduction('DEVICE INFORMER')
-print(information.format(get_hostname(), get_local_ip(), get_connected_network(), get_using_interface(), get_device_uptime(), get_ram_usage()))
+table = PrettyTable(['Hostname', 'Local IP', 'Wi-Fi', 'Interface', 'Uptime', 'RAM'])
+data = ([hostname, local_ip, wifi, interface, uptime, ram])
+table.add_row(data)
+
+
+print(table)
+send_message(information)

@@ -1,0 +1,6 @@
+
+SLACK_TOKEN = 'xoxb-1418622878469-1530175118582-kQvFMJewAjuU96Dih1VjfsZH'
+
+SLACK_CHANNEL_INFO = '#devi̇ce-report'
+
+SLACK_BOT_NAME = 'Postaci'
