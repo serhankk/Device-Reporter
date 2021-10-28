@@ -7,7 +7,10 @@ def introduction(text):
     print('-' * 60)
 
 def get_hostname():
-    return socket.gethostname()
+    try:
+        return socket.gethostname()
+    except:
+        pass
 
 def get_local_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -21,25 +24,37 @@ def get_local_ip():
     return IP
 
 def get_connected_network():
-    output = str(subprocess.check_output(['iwgetid']))
-    network= output.split('"')[1]
-    return network
+    try:
+        output = str(subprocess.check_output(['iwgetid']))
+        network= output.split('"')[1]
+        return network
+    except:
+        pass
 
 def get_using_interface():
-    output = str(subprocess.check_output(['iwgetid']))
-    network = output.split(' ')[0]
-    return network
+    try:
+        output = str(subprocess.check_output(['iwgetid']))
+        network = output.split(' ')[0]
+        return network
+    except:
+        pass
 
 def get_device_uptime():
-    t = os.popen('uptime -p').read()[:-1]
-    t = [f'{x.capitalize()} ' for x in t.split(' ')]
-    t = ''.join(t).rstrip()
-    return t
+    try:
+        t = os.popen('uptime -p').read()[:-1]
+        t = [f'{x.capitalize()} ' for x in t.split(' ')]
+        t = ''.join(t).rstrip()
+        return t
+    except:
+        pass
 
 def get_ram_usage():
-    total_m = os.popen('free -h').readlines()[1].split()[1]
-    used_m= os.popen('free -h').readlines()[1].split()[2]
-    return f'{used_m} of {total_m}'
+    try:
+        total_m = os.popen('free -h').readlines()[1].split()[1]
+        used_m= os.popen('free -h').readlines()[1].split()[2]
+        return f'{used_m} of {total_m}'
+    except:
+        pass
 
 
 information = '''HOSTNAME: "{}"
