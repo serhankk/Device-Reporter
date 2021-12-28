@@ -21,7 +21,7 @@ Gives some information about your remote device.
 
 ![Slack Channel Output](https://i.imgur.com/6h7dinS.png)
 
-## .gitignore FILE CONTENT: 
+## CONFIG.py FILE CONTENT: 
 
 ```
 SLACK_TOKEN = # Insert here your Slack Bot's Token.
