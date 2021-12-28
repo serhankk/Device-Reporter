@@ -20,3 +20,13 @@ Gives some information about your remote device.
 ![Terminal Output](https://i.imgur.com/S1iYslK.png)
 
 ![Slack Channel Output](https://i.imgur.com/6h7dinS.png)
+
+## .gitignore FILE CONTENT: 
+
+"""
+SLACK_TOKEN = # Insert here your Slack Bot's Token.
+
+SLACK_CHANNEL_INFO = # Insert here your Slack Channel.
+
+SLACK_BOT_NAME = # Insert here your Slack Bot name.
+"""
