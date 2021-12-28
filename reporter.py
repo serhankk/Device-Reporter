@@ -1,6 +1,10 @@
 # Imports
+import socket
+import subprocess
+import os
+import requests
 from prettytable import PrettyTable
-import socket, subprocess, os, requests, CONFIG
+import CONFIG
 
 def send_message(text):
     try:
@@ -10,76 +14,60 @@ def send_message(text):
         'text': text,
         'username': CONFIG.SLACK_BOT_NAME,
 })
-    except Exception as e:
-        print(e)
+    except ConnectionError:
+        exit("Connection Error.")
 
 def get_hostname():
-    try:
-        return socket.gethostname()
-    except:
-        pass
+    return socket.gethostname()
 
 def get_local_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        s.connect(('10.255.255.255', 1))
-        IP = s.getsockname()[0]
-    except Exception:
-        IP = '127.0.0.1'
-    finally:
-        s.close()
-    return IP
+    local_ip_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    local_ip_socket.connect(('10.255.255.255', 1))
+    local_ip_address = local_ip_socket.getsockname()[0]
+
+    local_ip_socket.close()
+    return local_ip_address
 
 def get_connected_network():
-    try:
-        output = str(subprocess.check_output(['iwgetid']))
-        network= output.split('"')[1]
-        return network
-    except:
-        pass
+    output = str(subprocess.check_output(['iwgetid']))
+    network= output.split('"')[1]
+    return network
 
 def get_using_interface():
-    try:
-        output = str(subprocess.check_output(['iwgetid']))
-        network = output.split(' ')[0]
-        return network
-    except:
-        pass
+    output = str(subprocess.check_output(['iwgetid']))
+    network = output.split(' ')[0]
+    return network
 
 def get_device_uptime():
-    try:
-        t = os.popen('uptime -p').read()[:-1]
-        t = [f'{x.capitalize()} ' for x in t.split(' ')]
-        t = ''.join(t).rstrip()
-        return t
-    except:
-        pass
+    uptime_data = os.popen('uptime -p').read()[:-1]
+    uptime_data = [f'{x.capitalize()} ' for x in uptime_data.split(' ')]
+    uptime_data = ''.join(uptime_data).rstrip()
+    return uptime_data
 
 def get_ram_usage():
-    try:
-        total_m = os.popen('free -h').readlines()[1].split()[1]
-        used_m= os.popen('free -h').readlines()[1].split()[2]
-        return f'{used_m} of {total_m}'
-    except:
-        pass
+    total_m = os.popen('free -h').readlines()[1].split()[1]
+    used_m= os.popen('free -h').readlines()[1].split()[2]
+    return f'{used_m} of {total_m}'
+
 hostname = get_hostname()
 local_ip = get_local_ip()
 wifi = get_connected_network()
 interface = get_using_interface()
-uptime = get_device_uptime()
+device_uptime = get_device_uptime()
 ram = get_ram_usage()
 
-information = '''HOSTNAME: "{}"
+INFORMATION = '''HOSTNAME: "{}"
 LOCAL IP: "{}"
 CONNECTED NETWORK: "{}"
 USING NETWORK INTERFACE: "{}"
 DEVICE UPTIME: "{}"
-RAM USAGE: "{}"'''.format(hostname, local_ip, wifi, interface, uptime, ram)
+RAM USAGE: "{}"'''.format(hostname, local_ip, wifi, interface, device_uptime, ram)
 
 table = PrettyTable(['Hostname', 'Local IP', 'Wi-Fi', 'Interface', 'Uptime', 'RAM'])
-data = ([hostname, local_ip, wifi, interface, uptime, ram])
+data = ([hostname, local_ip, wifi, interface, device_uptime, ram])
 table.add_row(data)
 
 
 print(table)
-send_message(information)
+send_message(INFORMATION)
