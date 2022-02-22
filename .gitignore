@@ -1,1 +1,2 @@
-CONFIG.py
+src/CONFIG.py
+__pycache__/
