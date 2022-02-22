@@ -3,7 +3,8 @@ import socket
 import subprocess
 import os
 import requests
-from prettytable import PrettyTable
+# from prettytable import PrettyTable
+import getpass
 import CONFIG
 
 def send_message(text):
@@ -16,6 +17,9 @@ def send_message(text):
 })
     except ConnectionError:
         exit("Connection Error.")
+
+def get_username():
+    return getpass.getuser()
 
 def get_hostname():
     return socket.gethostname()
@@ -50,24 +54,30 @@ def get_ram_usage():
     used_m= os.popen('free -h').readlines()[1].split()[2]
     return f'{used_m} of {total_m}'
 
+
+username = get_username()
 hostname = get_hostname()
 local_ip = get_local_ip()
 wifi = get_connected_network()
 interface = get_using_interface()
 device_uptime = get_device_uptime()
 ram = get_ram_usage()
+ssh_port = '*under_construction*'
 
-INFORMATION = '''HOSTNAME: "{}"
+INFORMATION = '''USERNAME: "{}"
+HOSTNAME: "{}"
 LOCAL IP: "{}"
 CONNECTED NETWORK: "{}"
 USING NETWORK INTERFACE: "{}"
 DEVICE UPTIME: "{}"
-RAM USAGE: "{}"'''.format(hostname, local_ip, wifi, interface, device_uptime, ram)
+RAM USAGE: "{}"
+SSH PORT: "{}"'''.format(username, hostname, local_ip, wifi, interface, device_uptime, ram, ssh_port)
 
-table = PrettyTable(['Hostname', 'Local IP', 'Wi-Fi', 'Interface', 'Uptime', 'RAM'])
-data = ([hostname, local_ip, wifi, interface, device_uptime, ram])
-table.add_row(data)
+def make_table():
+    # table = PrettyTable(['Hostname', 'Local IP', 'Wi-Fi', 'Interface', 'Uptime', 'RAM'])
+    # data = ([hostname, local_ip, wifi, interface, device_uptime, ram])
+    # table.add_row(data)
+    # print(table)
+    pass
 
-
-print(table)
 send_message(INFORMATION)
